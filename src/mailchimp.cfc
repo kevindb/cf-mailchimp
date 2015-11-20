@@ -26,8 +26,35 @@ component displayname="MailChimp" output=true {
 	) {
 		local.url = variables.apiHost & arguments.endpoint & structToQueryString(arguments.params);
 
+		writeOutput("url: " & local.url & "<br>");
+
 		local.httpService = new http(url=local.url, method="get", password=variables.apiKey, username="");
 		local.httpContent = httpService.send().getPrefix().fileContent;
+		local.responseJson = deserializeJSON(local.httpContent);
+
+		return local.responseJson;
+	}
+
+	private function put (
+		required string endpoint,
+				 struct data,
+				 struct params = {}
+	) {
+		local.url = variables.apiHost & arguments.endpoint & structToQueryString(arguments.params);
+
+		writeOutput("url: " & local.url & "<br>");
+		writeDump(serializeJson(arguments.data));
+
+		local.httpService = new http(url=local.url, method="put", password=variables.apiKey, username="");
+
+		local.httpService.addParam(type="body", value=serializeJson(arguments.data));
+
+		local.httpService = local.httpService.send();
+
+		writeDump(local.httpService);
+
+		local.httpContent = httpService.getPrefix().fileContent;
+
 		local.responseJson = deserializeJSON(local.httpContent);
 
 		return local.responseJson;
