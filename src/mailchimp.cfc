@@ -21,9 +21,10 @@ component displayname="MailChimp" output=true {
 	}
 
 	private struct function get (
-		required string endpoint
+		required string endpoint,
+				 struct params = {}
 	) {
-		local.url = variables.apiHost & arguments.endpoint;
+		local.url = variables.apiHost & arguments.endpoint & structToQueryString(arguments.params);
 
 		local.httpService = new http(url=local.url, method="get", password=variables.apiKey, username="");
 		local.httpContent = httpService.send().getPrefix().fileContent;
@@ -31,4 +32,22 @@ component displayname="MailChimp" output=true {
 
 		return local.responseJson;
 	}
+
+	private string function structToQueryString (
+		required struct params
+	) {
+		response = "";
+
+		for (key in arguments.params) {
+			response = listAppend(response, key & "=" & urlEncodedFormat(arguments.params[key]), "&");
+		}
+
+		if (len(response) > 0) {
+			response = "?" & response;
+		}
+
+		return response;
+	}
+
+
 }
