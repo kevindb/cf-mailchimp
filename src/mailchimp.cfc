@@ -19,4 +19,16 @@ component displayname="MailChimp" output=true {
 
 		return this;
 	}
+
+	private struct function get (
+		required string endpoint
+	) {
+		local.url = variables.apiHost & arguments.endpoint;
+
+		local.httpService = new http(url=local.url, method="get", password=variables.apiKey, username="");
+		local.httpContent = httpService.send().getPrefix().fileContent;
+		local.responseJson = deserializeJSON(local.httpContent);
+
+		return local.responseJson;
+	}
 }
