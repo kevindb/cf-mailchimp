@@ -76,5 +76,12 @@ component displayname="MailChimp" output=true {
 		return response;
 	}
 
-
+	private string function getErrorFromHttp (
+		required struct http
+	) {
+		return {
+			"statusCode" = arguments.http.statusCode,
+			"errorDetail" = arguments.http.errorDetail
+		};
+	}
 }
