@@ -26,7 +26,7 @@ component displayname="MailChimp" output=true {
 	) {
 		local.url = variables.apiHost & arguments.endpoint & structToQueryString(arguments.params);
 
-		writeOutput("url: " & local.url & "<br>");
+		writeOutput("HTTP GET: " & local.url & "<br>");
 
 		local.httpService = new http(url=local.url, method="get", password=variables.apiKey, username="");
 		local.httpContent = httpService.send().getPrefix().fileContent;
@@ -42,7 +42,7 @@ component displayname="MailChimp" output=true {
 	) {
 		local.url = variables.apiHost & arguments.endpoint & structToQueryString(arguments.params);
 
-		writeOutput("url: " & local.url & "<br>");
+		writeOutput("HTTP PUT: " & local.url & "<br>");
 		writeDump(serializeJson(arguments.data));
 
 		local.httpService = new http(url=local.url, method="put", password=variables.apiKey, username="");
