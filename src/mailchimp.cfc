@@ -20,6 +20,12 @@ component displayname="MailChimp" output=true {
 		return this;
 	}
 
+	public string function getMemberIdFromEmail(
+		required string email
+	) {
+		return lcase(hash(lcase(trim(arguments.email)), "MD5"));
+	}
+
 	private struct function get (
 		required string endpoint,
 				 struct params = {}
