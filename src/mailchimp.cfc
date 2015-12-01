@@ -103,6 +103,10 @@ component displayname="MailChimp" output=true {
 	) {
 		response = "";
 
+		if (!(structKeyExists(arguments.params, "exclude_fields") || structKeyExists(arguments.params, "fields"))) {
+			arguments.params.exclude_fields = "_links";
+		}
+
 		for (key in arguments.params) {
 			response = listAppend(response, key & "=" & urlEncodedFormat(arguments.params[key]), "&");
 		}
