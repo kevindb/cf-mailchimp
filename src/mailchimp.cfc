@@ -1,10 +1,12 @@
-component displayname="MailChimp" output=true {
+component displayname="MailChimp" {
 	variables.apiHost = "https://us1.api.mailchimp.com/3.0/";
 	variables.apiKey = "";
+	variables.debug = false;
 
 	public mailchimp function init (
 		required string apiKey,
-				 string apiHost = ""
+				 string apiHost = "",
+				 boolean debug = false
 	) {
 		if (len(arguments.apiKey) > 0) {
 			variables.apiKey = arguments.apiKey;
@@ -18,6 +20,11 @@ component displayname="MailChimp" output=true {
 				dc = listLast(variables.apiKey, "-");
 				variables.apiHost = replace(variables.apiHost, "us1", dc);
 			}
+
+			variables.debug = arguments.debug;
+
+		} else {
+			throw(message="apiKey was not set");
 		}
 
 		return this;
@@ -78,7 +85,7 @@ component displayname="MailChimp" output=true {
 			response = batch(operations);
 
 		} catch(any error) {
-			writeDump(error);
+			if (variables.debug) { writeDump(error); }
 		}
 
 		return response;
@@ -96,7 +103,7 @@ component displayname="MailChimp" output=true {
 			response = put("lists/" & arguments.listId & "/members/" & memberId, arguments.data);
 
 		} catch(any error) {
-			writeDump(error);
+			if (variables.debug) { writeDump(error); }
 		}
 
 		return response;
@@ -117,7 +124,7 @@ component displayname="MailChimp" output=true {
 	) {
 		local.url = variables.apiHost & arguments.endpoint & structToQueryString(arguments.params);
 
-		writeOutput("HTTP GET: " & local.url & "<br>");
+		if (variables.debug) { writeOutput("HTTP GET: " & local.url & "<br>"); }
 
 		httpService = new http(url=local.url, method="get", password=variables.apiKey, username="");
 		httpContent = httpService.send().getPrefix().fileContent;
@@ -134,8 +141,10 @@ component displayname="MailChimp" output=true {
 	) {
 		local.url = variables.apiHost & arguments.endpoint & structToQueryString(arguments.params);
 
-		writeOutput("HTTP PUT: " & local.url & "<br>");
-		writeDump(serializeJson(arguments.data));
+		if (variables.debug) {
+			writeOutput("HTTP PUT: " & local.url & "<br>");
+			writeDump(serializeJson(arguments.data));
+		}
 
 		httpService = new http(url=local.url, method="put", password=variables.apiKey, username="");
 
@@ -143,7 +152,7 @@ component displayname="MailChimp" output=true {
 
 		httpService = httpService.send();
 
-		writeDump(httpService);
+		if (variables.debug) { writeDump(httpService); }
 
 		httpContent = httpService.getPrefix().fileContent;
 
@@ -159,8 +168,10 @@ component displayname="MailChimp" output=true {
 		local.url = variables.apiHost & "batches";
 		data = { operations = arguments.operations };
 
-		writeOutput("HTTP POST: " & local.url & "<br>");
-		writeDump(serializeJson(data));
+		if (variables.debug) {
+			writeOutput("HTTP POST: " & local.url & "<br>");
+			writeDump(serializeJson(data));
+		}
 
 		httpService = new http(url=local.url, method="post", password=variables.apiKey, username="");
 
@@ -168,7 +179,7 @@ component displayname="MailChimp" output=true {
 
 		httpService = httpService.send();
 
-		writeDump(httpService);
+		if (variables.debug) { writeDump(httpService); }
 
 		httpContent = httpService.getPrefix().fileContent;
 
