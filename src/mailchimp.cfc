@@ -23,6 +23,19 @@ component displayname="MailChimp" output=true {
 		return this;
 	}
 
+	// MailChimp List calls
+	// http://developer.mailchimp.com/documentation/mailchimp/reference/lists/
+	public function getLists() {
+		return get("lists");
+	}
+
+	public function getList(
+		required string listId
+	) {
+		return get("lists/" & arguments.listId);
+	}
+
+
 	// MailChimp Member calls
 	// http://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/
 
