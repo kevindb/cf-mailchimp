@@ -1,3 +1,20 @@
+/*
+* ColdFusion MailChimp API 3.0 wrapper
+* v1.0.0
+* https://github.com/kevindb/cf-mailchimp
+*
+* ColdFusion wrapper for the MailChimp 3.0 API
+*
+* Copyright 2015 Kevin Morris
+*
+* This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+*/
+
+
 component displayname="MailChimp" {
 	variables.apiHost = "https://us1.api.mailchimp.com/3.0/";
 	variables.apiKey = "";
