@@ -13,6 +13,9 @@ If there is a feature that you would like added, please [open an issue](https://
 - putListMembers - Uses a batch operation to add or update multiple members of the specified list
 - putListMember - Adds or updates a single member to the specified list
 
+##Requirements
+I have only tested on Adobe ColdFusion 11. I am confident that the wrapper will work in Lucee/Railo 4. It may work in ACF 10 and will NOT work in ACF 9-.
+
 ##Resources
 [MailChimp API 3.0 Documention](http://developer.mailchimp.com/)
 
