@@ -35,6 +35,33 @@ component displayname="MailChimp" output=true {
 		return get("lists/" & arguments.listId & "/members/" & memberId);
 	}
 
+	public function putListMembers(
+		required string listId,
+		required array members
+	) {
+		response = {};
+		operations = [];
+
+		try {
+			for (data in arguments.members) {
+				memberId = getMemberIdFromEmail(data.email_address);
+
+				operations.append({
+					method = "PUT",
+					path = "/lists/" & arguments.listId & "/members/" & memberId,
+					body = serializeJson(data)
+				});
+			}
+
+			response = batch(operations);
+
+		} catch(any error) {
+			writeDump(error);
+		}
+
+		return response;
+	}
+
 	public function putListMember(
 		required string listId,
 		required struct data
@@ -86,6 +113,30 @@ component displayname="MailChimp" output=true {
 		httpService = new http(url=local.url, method="put", password=variables.apiKey, username="");
 
 		httpService.addParam(type="body", value=serializeJson(arguments.data));
+
+		httpService = httpService.send();
+
+		writeDump(httpService);
+
+		httpContent = httpService.getPrefix().fileContent;
+
+		responseJson = deserializeJSON(httpContent);
+
+		return responseJson;
+	}
+
+	private function batch (
+		required array operations
+	) {
+		local.url = variables.apiHost & "batches";
+		data = { operations = arguments.operations };
+
+		writeOutput("HTTP POST: " & local.url & "<br>");
+		writeDump(serializeJson(data));
+
+		httpService = new http(url=local.url, method="post", password=variables.apiKey, username="");
+
+		httpService.addParam(type="body", value=serializeJson(data));
 
 		httpService = httpService.send();
 
