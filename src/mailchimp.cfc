@@ -35,6 +35,23 @@ component displayname="MailChimp" output=true {
 		return get("lists/" & arguments.listId & "/members/" & memberId);
 	}
 
+	public function putListMember(
+		required string listId,
+		required struct data
+	) {
+		response = {};
+
+		try {
+			memberId = getMemberIdFromEmail(arguments.data.email_address);
+			response = put("lists/" & arguments.listId & "/members/" & memberId, arguments.data);
+
+		} catch(any error) {
+			writeDump(error);
+		}
+
+		return response;
+	}
+
 	public string function getMemberIdFromEmail(
 		required string email
 	) {
