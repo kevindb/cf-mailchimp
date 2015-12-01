@@ -20,6 +20,21 @@ component displayname="MailChimp" output=true {
 		return this;
 	}
 
+	public function getListMembers(
+		required string listId
+	) {
+		return get("lists/" & arguments.listId & "/members");
+	}
+
+	public function getListMember(
+		required string listId,
+		required string email
+	) {
+		memberId = getMemberIdFromEmail(arguments.email);
+
+		return get("lists/" & arguments.listId & "/members/" & memberId);
+	}
+
 	public string function getMemberIdFromEmail(
 		required string email
 	) {
