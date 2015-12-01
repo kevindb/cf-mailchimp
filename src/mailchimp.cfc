@@ -12,8 +12,8 @@ component displayname="MailChimp" output=true {
 			if (len(arguments.apiHost) > 0) {
 				variables.apiHost = arguments.apiHost;
 			} else {
-				local.dc = listLast(variables.apiKey, "-");
-				variables.apiHost = replace(variables.apiHost, "us1", local.dc);
+				dc = listLast(variables.apiKey, "-");
+				variables.apiHost = replace(variables.apiHost, "us1", dc);
 			}
 		}
 
@@ -66,11 +66,11 @@ component displayname="MailChimp" output=true {
 
 		writeOutput("HTTP GET: " & local.url & "<br>");
 
-		local.httpService = new http(url=local.url, method="get", password=variables.apiKey, username="");
-		local.httpContent = httpService.send().getPrefix().fileContent;
-		local.responseJson = deserializeJSON(local.httpContent);
+		httpService = new http(url=local.url, method="get", password=variables.apiKey, username="");
+		httpContent = httpService.send().getPrefix().fileContent;
+		responseJson = deserializeJSON(httpContent);
 
-		return local.responseJson;
+		return responseJson;
 	}
 
 	private function put (
@@ -83,19 +83,19 @@ component displayname="MailChimp" output=true {
 		writeOutput("HTTP PUT: " & local.url & "<br>");
 		writeDump(serializeJson(arguments.data));
 
-		local.httpService = new http(url=local.url, method="put", password=variables.apiKey, username="");
+		httpService = new http(url=local.url, method="put", password=variables.apiKey, username="");
 
-		local.httpService.addParam(type="body", value=serializeJson(arguments.data));
+		httpService.addParam(type="body", value=serializeJson(arguments.data));
 
-		local.httpService = local.httpService.send();
+		httpService = httpService.send();
 
-		writeDump(local.httpService);
+		writeDump(httpService);
 
-		local.httpContent = httpService.getPrefix().fileContent;
+		httpContent = httpService.getPrefix().fileContent;
 
-		local.responseJson = deserializeJSON(local.httpContent);
+		responseJson = deserializeJSON(httpContent);
 
-		return local.responseJson;
+		return responseJson;
 	}
 
 	private string function structToQueryString (
