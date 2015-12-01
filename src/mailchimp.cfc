@@ -9,8 +9,11 @@ component displayname="MailChimp" output=true {
 		if (len(arguments.apiKey) > 0) {
 			variables.apiKey = arguments.apiKey;
 
+			// Allow apiHost to be set manually
 			if (len(arguments.apiHost) > 0) {
 				variables.apiHost = arguments.apiHost;
+
+			// Get datacenter from API key
 			} else {
 				dc = listLast(variables.apiKey, "-");
 				variables.apiHost = replace(variables.apiHost, "us1", dc);
@@ -20,12 +23,17 @@ component displayname="MailChimp" output=true {
 		return this;
 	}
 
+	// MailChimp Member calls
+	// http://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/
+
+	// Retrieves a list of all members of the specified list
 	public function getListMembers(
 		required string listId
 	) {
 		return get("lists/" & arguments.listId & "/members");
 	}
 
+	// Retrieves details on a single member of the specified list
 	public function getListMember(
 		required string listId,
 		required string email
@@ -35,6 +43,7 @@ component displayname="MailChimp" output=true {
 		return get("lists/" & arguments.listId & "/members/" & memberId);
 	}
 
+	// Uses a batch operation to add or update multiple members of the specified list
 	public function putListMembers(
 		required string listId,
 		required array members
@@ -62,6 +71,7 @@ component displayname="MailChimp" output=true {
 		return response;
 	}
 
+	// Adds or updates a single member to the specified list
 	public function putListMember(
 		required string listId,
 		required struct data
@@ -79,12 +89,15 @@ component displayname="MailChimp" output=true {
 		return response;
 	}
 
+	// Generates the member ID, the MD5 hash of the email address
+	// http://developer.mailchimp.com/documentation/mailchimp/guides/manage-subscribers-with-the-mailchimp-api/
 	public string function getMemberIdFromEmail(
 		required string email
 	) {
 		return lcase(hash(lcase(trim(arguments.email)), "MD5"));
 	}
 
+	// Performs a generic HTTP GET operation
 	private struct function get (
 		required string endpoint,
 				 struct params = {}
@@ -100,6 +113,7 @@ component displayname="MailChimp" output=true {
 		return responseJson;
 	}
 
+	// Performs a generic HTTP PUT operation
 	private function put (
 		required string endpoint,
 				 struct data,
@@ -125,6 +139,7 @@ component displayname="MailChimp" output=true {
 		return responseJson;
 	}
 
+	// Performs a MailChimp's HTTP POST batch operation
 	private function batch (
 		required array operations
 	) {
@@ -149,11 +164,13 @@ component displayname="MailChimp" output=true {
 		return responseJson;
 	}
 
+	// Converts a struct into a URL query string
 	private string function structToQueryString (
 		required struct params
 	) {
 		response = "";
 
+		// Adds default exclude_fields=_links. This drastically reduces the response size from MailChimp
 		if (!(structKeyExists(arguments.params, "exclude_fields") || structKeyExists(arguments.params, "fields"))) {
 			arguments.params.exclude_fields = "_links";
 		}
@@ -169,6 +186,7 @@ component displayname="MailChimp" output=true {
 		return response;
 	}
 
+	// In the event of an HTTP error status, parses the detail out of the CF HTTP object
 	private string function getErrorFromHttp (
 		required struct http
 	) {
