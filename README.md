@@ -24,6 +24,12 @@ If you want to keep `JSONUtil.cfc` in a different folder, then add the argument 
 
 If `JSONUtil.cfc` cannot be found, CF MailChimp will fall back to using ColdFusion's built-in serializer.
 
+##Community
+Want to contribute to CF MailChimp? Awesome! See [CONTRIBUTING](CONTRIBUTING.md) for more information.
+
+###Code of Conduct
+Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md) to ensure that this project is a welcoming place for **everyone** to contribute to. By participating in this project you agree to abide by its terms.
+
 ##Usage
 ```
 mc = new mailchimp(
