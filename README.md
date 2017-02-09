@@ -16,6 +16,14 @@ If there is a feature that you would like added, please [open an issue](https://
 ##Requirements
 I have only tested on Adobe ColdFusion 11. I am confident that the wrapper will work in Lucee/Railo 4. It may work in ACF 10 and will NOT work in ACF 9-.
 
+###JSONUtil Dependency
+CF MailChimp uses the [JSONUtil](https://github.com/CFCommunity/jsonutil) library for JSON serialization/deserialization instead of ColdFusion's built-in serializer. MailChimp's API will reject data being sent as a boolean or numeric value when it is expecting a string. CF's serializer frequently and silently converts variable types and cannot be controlled.
+
+If you put `JSONUtil.cfc` in the same folder as `mailchimp.cfc`, it will be found automatically.  
+If you want to keep `JSONUtil.cfc` in a different folder, then add the argument `jsonUtil` to your `init`, and pass it the normal ColdFusion dot-delimited path to the component.
+
+If `JSONUtil.cfc` cannot be found, CF MailChimp will fall back to using ColdFusion's built-in serializer.
+
 ##Usage
 ```
 mc = new mailchimp(
@@ -41,7 +49,8 @@ newMember = mc.putListMember(
 ```
 
 ##Resources
-[MailChimp API 3.0 Documention](http://developer.mailchimp.com/)
+* [MailChimp API 3.0 Documention](http://developer.mailchimp.com/)
+* [JSONUtil ColdFusion JSON library](https://github.com/CFCommunity/jsonutil)
 
 ##Contributors
 This project is based on previous work by others. 

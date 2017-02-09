@@ -23,7 +23,8 @@ component displayname="MailChimp" {
 	public mailchimp function init (
 		required string apiKey,
 				 string apiHost = "",
-				 boolean debug = false
+				 boolean debug = false,
+				 string jsonUtil = "JSONUtil"
 	) {
 		if (len(arguments.apiKey) > 0) {
 			variables.apiKey = arguments.apiKey;
@@ -42,6 +43,13 @@ component displayname="MailChimp" {
 
 		} else {
 			throw(message="apiKey was not set");
+		}
+
+		try {
+			variables.JSONUtil = new "#arguments.jsonUtil#"();
+
+		} catch(any error) {
+			if (variables.debug) { writeDump(error); }
 		}
 
 		return this;
@@ -95,7 +103,7 @@ component displayname="MailChimp" {
 				operations.append({
 					method = "PUT",
 					path = "/lists/" & arguments.listId & "/members/" & memberId,
-					body = serializeJson(data)
+					body = variables.serializeJson(data)
 				});
 			}
 
@@ -143,9 +151,8 @@ component displayname="MailChimp" {
 
 		if (variables.debug) { writeOutput("HTTP GET: " & local.url & "<br>"); }
 
-		httpService = new http(url=local.url, method="get", password=variables.apiKey, username="");
 		httpContent = httpService.send().getPrefix().fileContent;
-		responseJson = deserializeJSON(httpContent);
+		responseJson = variables.parseJson(httpContent);
 
 		return responseJson;
 	}
@@ -160,12 +167,12 @@ component displayname="MailChimp" {
 
 		if (variables.debug) {
 			writeOutput("HTTP PUT: " & local.url & "<br>");
-			writeDump(serializeJson(arguments.data));
+			writeDump(variables.serializeJson(arguments.data));
 		}
 
 		httpService = new http(url=local.url, method="put", password=variables.apiKey, username="");
 
-		httpService.addParam(type="body", value=serializeJson(arguments.data));
+		httpService.addParam(type="body", value=variables.serializeJson(arguments.data));
 
 		httpService = httpService.send();
 
@@ -173,7 +180,7 @@ component displayname="MailChimp" {
 
 		httpContent = httpService.getPrefix().fileContent;
 
-		responseJson = deserializeJSON(httpContent);
+		responseJson = variables.serializeJson(httpContent);
 
 		return responseJson;
 	}
@@ -187,12 +194,12 @@ component displayname="MailChimp" {
 
 		if (variables.debug) {
 			writeOutput("HTTP POST: " & local.url & "<br>");
-			writeDump(serializeJson(data));
+			writeDump(variables.serializeJson(arguments.data));
 		}
 
 		httpService = new http(url=local.url, method="post", password=variables.apiKey, username="");
 
-		httpService.addParam(type="body", value=serializeJson(data));
+		httpService.addParam(type="body", value=variables.serializeJson(data));
 
 		httpService = httpService.send();
 
@@ -200,9 +207,31 @@ component displayname="MailChimp" {
 
 		httpContent = httpService.getPrefix().fileContent;
 
-		responseJson = deserializeJSON(httpContent);
+		responseJson = variables.serializeJson(httpContent);
 
 		return responseJson;
+	}
+
+	// If JSONUtil is defined, use it to serialize an object to JSON, otherwise fall back to CF's serializer
+	private string function serializeJson (
+		required data
+	) {
+		if (structKeyExists(variables, "JSONUtil")) {
+			return variables.JSONUtil.serialize(var=arguments.data, strictMapping=true);
+		} else {
+			return serializeJson(arguments.data);
+		}
+	}
+
+	// If JSONUtil is defined, use it to parse JSON string into an object, otherwise fall back to CF's deserializer
+	private string function parseJson (
+		required string json
+	) {
+		if (structKeyExists(variables, "JSONUtil")) {
+			return variables.JSONUtil.deserializeJSON(arguments.json);
+		} else {
+			return deserializeJson(arguments.data);
+		}
 	}
 
 	// Converts a struct into a URL query string
