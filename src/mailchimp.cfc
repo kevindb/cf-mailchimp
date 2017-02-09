@@ -151,6 +151,7 @@ component displayname="MailChimp" {
 
 		if (variables.debug) { writeOutput("HTTP GET: " & local.url & "<br>"); }
 
+		httpService = new http(url=local.url, method="get", password=variables.apiKey, username="");
 		httpContent = httpService.send().getPrefix().fileContent;
 		responseJson = variables.parseJson(httpContent);
 
@@ -171,16 +172,13 @@ component displayname="MailChimp" {
 		}
 
 		httpService = new http(url=local.url, method="put", password=variables.apiKey, username="");
-
 		httpService.addParam(type="body", value=variables.serializeJson(arguments.data));
-
 		httpService = httpService.send();
 
 		if (variables.debug) { writeDump(httpService); }
 
 		httpContent = httpService.getPrefix().fileContent;
-
-		responseJson = variables.serializeJson(httpContent);
+		responseJson = variables.parseJson(httpContent);
 
 		return responseJson;
 	}
@@ -198,16 +196,13 @@ component displayname="MailChimp" {
 		}
 
 		httpService = new http(url=local.url, method="post", password=variables.apiKey, username="");
-
 		httpService.addParam(type="body", value=variables.serializeJson(data));
-
 		httpService = httpService.send();
 
 		if (variables.debug) { writeDump(httpService); }
 
 		httpContent = httpService.getPrefix().fileContent;
-
-		responseJson = variables.serializeJson(httpContent);
+		responseJson = variables.parseJson(httpContent);
 
 		return responseJson;
 	}
@@ -224,7 +219,7 @@ component displayname="MailChimp" {
 	}
 
 	// If JSONUtil is defined, use it to parse JSON string into an object, otherwise fall back to CF's deserializer
-	private string function parseJson (
+	private function parseJson (
 		required string json
 	) {
 		if (structKeyExists(variables, "JSONUtil")) {
