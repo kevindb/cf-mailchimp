@@ -38,6 +38,7 @@ Here are a couple of guidelines that will help you contribute. Before we get sta
 
 So you've found a bug, and want to help us fix it? Before filing a bug report, please double-check the bug hasn't already been reported. You can do so [on our issue tracker](https://github.com/kevindb/cf-mailchimp/issues?q=is%3Aopen+is%3Aissue). If something hasn't been raised, you can go ahead and create a new issue with the following information:
 
+* Which version ColdFusion Server or Lucee are you using?
 * Which version of the plugin are you using?
 * How can the error be reproduced?
 
