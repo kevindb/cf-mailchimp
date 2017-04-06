@@ -11,6 +11,7 @@ prepros.cfg
 node_modules
 
 # SASS Cache
+.sass-cache
 *.scssc
 
 
