@@ -212,7 +212,7 @@ component displayname="MailChimp" {
 		required data
 	) {
 		if (structKeyExists(variables, "JSONUtil")) {
-			return variables.JSONUtil.serialize(var=arguments.data, strictMapping=true);
+			return variables.JSONUtil.serialize(var=arguments.data);
 		} else {
 			return serializeJson(arguments.data);
 		}
