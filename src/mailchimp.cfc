@@ -1,6 +1,6 @@
 /*
 * ColdFusion MailChimp API 3.0 wrapper
-* v1.1.0
+* v1.1.1
 * https://github.com/kevindb/cf-mailchimp
 *
 * ColdFusion wrapper for the MailChimp 3.0 API
