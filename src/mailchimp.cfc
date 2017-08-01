@@ -225,7 +225,7 @@ component displayname="MailChimp" {
 		if (structKeyExists(variables, "JSONUtil")) {
 			return variables.JSONUtil.deserializeJSON(arguments.json);
 		} else {
-			return deserializeJson(arguments.data);
+			return deserializeJson(arguments.json);
 		}
 	}
 
