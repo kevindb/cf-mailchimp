@@ -12,6 +12,11 @@ If there is a feature that you would like added, please [open an issue](https://
 - getListMember - Retrieves details on a single member of the specified list
 - putListMembers - Uses a batch operation to add or update multiple members of the specified list
 - putListMember - Adds or updates a single member to the specified list
+- getMemberIdFromEmail - Generates the member ID, the MD5 hash of the email address
+- getGroups - Retrieves a list of all interest groups of the specified list
+- getGroup - Retrieves details on a single interest group of the specified list
+- getInterests - Retrieves a list of all interests in the specified group
+- getInterest - Retrieves details on a single interest in the specified group
 
 ## Requirements
 I have only tested on Adobe ColdFusion 11. I am confident that the wrapper will work in Lucee/Railo 4. It may work in ACF 10 and will NOT work in ACF 9-.

@@ -142,6 +142,42 @@ component displayname="MailChimp" {
 		return lcase(hash(lcase(trim(arguments.email)), "MD5"));
 	}
 
+
+	// MailChimp Interest Group calls
+	// https://developer.mailchimp.com/documentation/mailchimp/reference/lists/interest-categories/
+	// Retrieves a list of all interest groups of the specified list
+	public function getGroups (
+		required string listId
+	) {
+		return get("lists/" & arguments.listId & "/interest-categories");
+	}
+
+	// Retrieves details on a single interest group of the specified list
+	public function getGroup (
+		required string listId,
+		required string groupId
+	) {
+		return get("lists/" & arguments.listId & "/interest-categories/" & arguments.groupId);
+	}
+
+	// Retrieves a list of all interests in the specified group
+	public function getInterests (
+		required string listId,
+		required string groupId
+	) {
+		return get("lists/" & arguments.listId & "/interest-categories/" & arguments.groupId & "/interests");
+	}
+
+	// Retrieves details on a single interest in the specified group
+	public function getInterest (
+		required string listId,
+		required string groupId,
+		required string interestId
+	) {
+		return get("lists/" & arguments.listId & "/interest-categories/" & arguments.groupId & "/interests/" & arguments.interestId);
+	}
+
+
 	// Performs a generic HTTP GET operation
 	private struct function get (
 		required string endpoint,
