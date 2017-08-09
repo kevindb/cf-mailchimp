@@ -72,14 +72,14 @@ component displayname="MailChimp" {
 	// http://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/
 
 	// Retrieves a list of all members of the specified list
-	public function getListMembers(
+	public function getListMembers (
 		required string listId
 	) {
 		return get("lists/" & arguments.listId & "/members");
 	}
 
 	// Retrieves details on a single member of the specified list
-	public function getListMember(
+	public function getListMember (
 		required string listId,
 		required string email
 	) {
@@ -89,7 +89,7 @@ component displayname="MailChimp" {
 	}
 
 	// Uses a batch operation to add or update multiple members of the specified list
-	public function putListMembers(
+	public function putListMembers (
 		required string listId,
 		required array members
 	) {
@@ -117,7 +117,7 @@ component displayname="MailChimp" {
 	}
 
 	// Adds or updates a single member to the specified list
-	public function putListMember(
+	public function putListMember (
 		required string listId,
 		required struct data
 	) {
@@ -136,7 +136,7 @@ component displayname="MailChimp" {
 
 	// Generates the member ID, the MD5 hash of the email address
 	// http://developer.mailchimp.com/documentation/mailchimp/guides/manage-subscribers-with-the-mailchimp-api/
-	public string function getMemberIdFromEmail(
+	public string function getMemberIdFromEmail (
 		required string email
 	) {
 		return lcase(hash(lcase(trim(arguments.email)), "MD5"));
