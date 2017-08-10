@@ -57,14 +57,23 @@ component displayname="MailChimp" {
 
 	// MailChimp List calls
 	// http://developer.mailchimp.com/documentation/mailchimp/reference/lists/
-	public function getLists() {
-		return get("lists");
+	public function getLists(
+		struct params = {}
+	) {
+		return get(
+			endpoint = "lists",
+			params = arguments.params
+		);
 	}
 
 	public function getList(
-		required string listId
+		required string listId,
+				 struct params = {}
 	) {
-		return get("lists/" & arguments.listId);
+		return get(
+			endpoint = "lists/" & arguments.listId,
+			params = arguments.params
+		);
 	}
 
 
@@ -73,25 +82,34 @@ component displayname="MailChimp" {
 
 	// Retrieves a list of all members of the specified list
 	public function getListMembers (
-		required string listId
+		required string listId,
+				 struct params = {}
 	) {
-		return get("lists/" & arguments.listId & "/members");
+		return get(
+			endpoint = "lists/" & arguments.listId & "/members",
+			params = arguments.params
+		);
 	}
 
 	// Retrieves details on a single member of the specified list
 	public function getListMember (
 		required string listId,
-		required string email
+		required string email,
+				 struct params = {}
 	) {
 		memberId = getMemberIdFromEmail(arguments.email);
 
-		return get("lists/" & arguments.listId & "/members/" & memberId);
+		return get(
+			endpoint = "lists/" & arguments.listId & "/members/" & memberId,
+			params = arguments.params
+		);
 	}
 
 	// Uses a batch operation to add or update multiple members of the specified list
 	public function putListMembers (
 		required string listId,
-		required array members
+		required array members,
+				 struct params = {}
 	) {
 		response = {};
 		operations = [];
@@ -107,7 +125,10 @@ component displayname="MailChimp" {
 				});
 			}
 
-			response = batch(operations);
+			response = batch(
+				operations = operations,
+				params = arguments.params
+			);
 
 		} catch(any error) {
 			if (variables.debug) { writeDump(error); }
@@ -119,13 +140,20 @@ component displayname="MailChimp" {
 	// Adds or updates a single member to the specified list
 	public function putListMember (
 		required string listId,
-		required struct data
+		required struct data,
+				 struct params = {}
 	) {
 		response = {};
 
 		try {
 			memberId = getMemberIdFromEmail(arguments.data.email_address);
-			response = put("lists/" & arguments.listId & "/members/" & memberId, arguments.data);
+
+			response = put(
+				endpoint = "lists/" & arguments.listId & "/members/" & memberId,
+				data = arguments.data,
+				params = arguments.params
+			);
+
 
 		} catch(any error) {
 			if (variables.debug) { writeDump(error); }
@@ -147,34 +175,50 @@ component displayname="MailChimp" {
 	// https://developer.mailchimp.com/documentation/mailchimp/reference/lists/interest-categories/
 	// Retrieves a list of all interest groups of the specified list
 	public function getGroups (
-		required string listId
+		required string listId,
+				 struct params = {}
 	) {
-		return get("lists/" & arguments.listId & "/interest-categories");
+		return get(
+			endpoint = "lists/" & arguments.listId & "/interest-categories",
+			params = arguments.params
+		);
 	}
 
 	// Retrieves details on a single interest group of the specified list
 	public function getGroup (
 		required string listId,
-		required string groupId
+		required string groupId,
+				 struct params = {}
 	) {
-		return get("lists/" & arguments.listId & "/interest-categories/" & arguments.groupId);
+		return get(
+			endpoint = "lists/" & arguments.listId & "/interest-categories/" & arguments.groupId,
+			params = arguments.params
+		);
 	}
 
 	// Retrieves a list of all interests in the specified group
 	public function getInterests (
 		required string listId,
-		required string groupId
+		required string groupId,
+				 struct params = {}
 	) {
-		return get("lists/" & arguments.listId & "/interest-categories/" & arguments.groupId & "/interests");
+		return get(
+			endpoint = "lists/" & arguments.listId & "/interest-categories/" & arguments.groupId & "/interests",
+			params = arguments.params
+		);
 	}
 
 	// Retrieves details on a single interest in the specified group
 	public function getInterest (
 		required string listId,
 		required string groupId,
-		required string interestId
+		required string interestId,
+				 struct params = {}
 	) {
-		return get("lists/" & arguments.listId & "/interest-categories/" & arguments.groupId & "/interests/" & arguments.interestId);
+		return get(
+			endpoint = "lists/" & arguments.listId & "/interest-categories/" & arguments.groupId & "/interests/" & arguments.interestId,
+			params = arguments.params
+		);
 	}
 
 
@@ -221,9 +265,10 @@ component displayname="MailChimp" {
 
 	// Performs a MailChimp's HTTP POST batch operation
 	private function batch (
-		required array operations
+		required array operations,
+				 struct params = {}
 	) {
-		local.url = variables.apiHost & "batches";
+		local.url = variables.apiHost & "batches" & structToQueryString(arguments.params);
 		data = { operations = arguments.operations };
 
 		if (variables.debug) {
